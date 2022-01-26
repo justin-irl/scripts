@@ -6,7 +6,7 @@
 # Also creates a file to capture the repo name and url of
 # the created issue.
 #
-# @justin-irl on GitHub
+# Created by me, @justin-irl on GitHub
 
 ###########################################################
 
