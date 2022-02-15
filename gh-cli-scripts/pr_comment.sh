@@ -8,7 +8,14 @@
 
 ###########################################################
 
-prs=$( gh pr list --limit 100 )
+# change to filter on open pr's
+# best to use part of a branch name or pr title
+# eg: 'dependabot' or 'Bump'
+serchterm="branch"
+# change to what you want to comment on the pr
+prcomment="comment"
+
+prs=$( gh pr list --limit 100 | grep "$searchterm" )
 
 declare -a pr_nums
 
@@ -17,14 +24,14 @@ do
     [[ $i =~ ^[0-9]$ ]] && pr_nums+=( "$i" )
 done
 
-echo "Total open Dependabot PR's: ${#pr_nums[@]}"
+echo "Total open matching PR's: ${#pr_nums[@]}"
 echo ""
 
 echo "Matching PR's:"
 echo "$prs"
 echo ""
 
-echo "Do you want to issue a rebase comment to all these PR's?"
+echo "Do you want to issue a comment to all these PR's?"
 echo "Enter '1' to continue or anything else to abort:"
 read -r -p ">>> " confirm
     if [[ "$confirm" =~ "1" ]]
@@ -32,7 +39,7 @@ read -r -p ">>> " confirm
         for p in ${pr_nums[@]}
         do
             echo "Pr number: $p"
-            gh pr comment $p --body "@dependabot rebase"
+            gh pr comment $p --body "$prcomment"
         done
     else
         exit 0
