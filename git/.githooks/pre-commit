@@ -1,0 +1,26 @@
+#!/bin/bash
+#
+# Script to prevent commit to the default branch
+#
+# Ensure you make this executable first: chmod +x */.githooks/pre-commit
+# replace * with the preceeding path
+
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
+
+LIGHTRED='\033[0;91m'
+LIGHTCYAN='\033[0;96m'
+ENDCOLOR='\033[00m'
+
+if git commit --dry-run
+then
+  if [[ $CURRENT_BRANCH == $DEFAULT_BRANCH ]]
+  then
+    echo -e "Unpermitted commit to default branch: ${LIGHTRED}\`${CURRENT_BRANCH}\`${ENDCOLOR}"
+    exit 1
+  else
+    echo -e "Committing to: ${LIGHTCYAN}\`${CURRENT_BRANCH}\`${ENDCOLOR}"
+    echo ""
+    exit 0
+  fi
+fi
